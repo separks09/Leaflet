@@ -33,8 +33,9 @@ d3.json("https://earthquake.usgs.gov/earthquakes/feed/v1.0/summary/2.5_week.geoj
                 "</h3><hr><p>" + new Date(feature.properties.time) + "</p>"+
                 "<p> Magnitude:" + feature.properties.mag + "</p>");
             }
+            
         });
-              
+         
         //Create a GeoJSON layer containing the features of the array on the plateData object
         var faultlines = L.geoJSON(plateData, {
             style: function(feature) {
@@ -72,9 +73,18 @@ d3.json("https://earthquake.usgs.gov/earthquakes/feed/v1.0/summary/2.5_week.geoj
             8.7832, -114.5085
             ],
             zoom: 3,
-            layers: [darkmap, earthquakes]
+            layers: [darkmap, earthquakes],
+            //After many failed attempts, this is the closest I got to a time element on markers.  I know I need
+            // to associate time interval to my geoJSON pull as well as make timeDimension act on the 
+            //earthquake layer.  Didn't get there, but I can add the control.  I also spend a good time of time
+            //with a plug-in called SliderControl that was more difficult than this one.
+            timeDimension: true,
+            timeDimensionOptions: {
+                timeInterval: "2018-06-25/2018-07-01",
+                period: "PT1H"
+            },
+            timeDimensionControl: true,
         });
-
         // Create a layer control,pass in our baseMaps and overlayMaps,add the layer control to the map
         L.control.layers(baseMaps, overlayMaps, {
             collapsed: false
@@ -98,15 +108,6 @@ d3.json("https://earthquake.usgs.gov/earthquakes/feed/v1.0/summary/2.5_week.geoj
 
         // Add the info legend to the map
         legend.addTo(myMap);
-
-
-        //My unsuccessful attempt at a time-slider/marker transitions
-        var testlayer = L.geoJSON(earthquakeData);
-        var sliderControl = L.control.sliderControl({position: "topleft", layer: testlayer});
-         //And initialize the slider
-        sliderControl.startSlider();
-        //Make sure to add the slider to the map ;-)
-        myMap.addControl(sliderControl);
 
     }); 
 });
